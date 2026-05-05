@@ -62,6 +62,8 @@
                 <ListBox x:Name="Members"
                          Grid.Row="1"
                          SelectionMode="Single"
+                         ItemsSource="{Binding AllParameters}"
+                         SelectedIndex="{Binding SelectedIndex}"
                          BorderThickness="1"
                          BorderBrush="Gray"
                          ScrollViewer.HorizontalScrollBarVisibility="Auto">
@@ -70,17 +72,13 @@
                             <Panel>
                                 <Grid ColumnDefinitions="80,120,120,*">
                                     <TextBlock Grid.Column="0" Text="{Binding Modifier}" Padding="4,0,8,0"
-                                               Opacity="{Binding IsRemoved, Converter={x:Static roslyn:ChangeSignatureConverters.RemovedToOpacity}}"
-                                               Foreground="{Binding IsRemoved, Converter={x:Static roslyn:ChangeSignatureConverters.RemovedToForeground}}" />
+                                               Opacity="{Binding IsRemoved, Converter={x:Static roslyn:ChangeSignatureConverters.RemovedToOpacity}}" />
                                     <TextBlock Grid.Column="1" Text="{Binding Type}" Padding="4,0,8,0"
-                                               Opacity="{Binding IsRemoved, Converter={x:Static roslyn:ChangeSignatureConverters.RemovedToOpacity}}"
-                                               Foreground="{Binding IsRemoved, Converter={x:Static roslyn:ChangeSignatureConverters.RemovedToForeground}}" />
+                                               Opacity="{Binding IsRemoved, Converter={x:Static roslyn:ChangeSignatureConverters.RemovedToOpacity}}" />
                                     <TextBlock Grid.Column="2" Text="{Binding ParameterName}" Padding="4,0,8,0"
-                                               Opacity="{Binding IsRemoved, Converter={x:Static roslyn:ChangeSignatureConverters.RemovedToOpacity}}"
-                                               Foreground="{Binding IsRemoved, Converter={x:Static roslyn:ChangeSignatureConverters.RemovedToForeground}}" />
+                                               Opacity="{Binding IsRemoved, Converter={x:Static roslyn:ChangeSignatureConverters.RemovedToOpacity}}" />
                                     <TextBlock Grid.Column="3" Text="{Binding Default}" Padding="4,0,8,0"
-                                               Opacity="{Binding IsRemoved, Converter={x:Static roslyn:ChangeSignatureConverters.RemovedToOpacity}}"
-                                               Foreground="{Binding IsRemoved, Converter={x:Static roslyn:ChangeSignatureConverters.RemovedToForeground}}" />
+                                               Opacity="{Binding IsRemoved, Converter={x:Static roslyn:ChangeSignatureConverters.RemovedToOpacity}}" />
                                 </Grid>
                                 <!-- Strikethrough line for removed parameters -->
                                 <Rectangle Height="1" Fill="Red" Opacity="0.4"
@@ -102,7 +100,8 @@
                 <ScrollViewer x:Name="SignatureScroller"
                               Padding="8,4,4,4"
                               VerticalScrollBarVisibility="Auto"
-                              HorizontalScrollBarVisibility="Disabled" />
+                              HorizontalScrollBarVisibility="Disabled"
+                              Content="{Binding SignatureDisplay, Converter={StaticResource TaggedTextConverter}}" />
             </Border>
 
             <!-- Control Buttons -->
@@ -113,18 +112,22 @@
                 <Button Name="UpButton"
                         Margin="9,0,0,0"
                         Click="MoveUp_Click"
+                        IsEnabled="{Binding CanMoveUp}"
                         Content="&#x25B2;" />
                 <Button Name="DownButton"
                         Margin="9,9,0,0"
                         Click="MoveDown_Click"
+                        IsEnabled="{Binding CanMoveDown}"
                         Content="&#x25BC;" />
                 <Button Name="RemoveButton"
                         Margin="9,29,0,0"
                         Click="Remove_Click"
+                        IsEnabled="{Binding CanRemove}"
                         Content="{Binding #dialog.Remove}" />
                 <Button Name="RestoreButton"
                         Margin="9,9,0,0"
                         Click="Restore_Click"
+                        IsEnabled="{Binding CanRestore}"
                         Content="{Binding #dialog.Restore}" />
             </StackPanel>
         </Grid>
@@ -138,6 +141,7 @@
                     Margin="0,0,0,0"
                     Padding="9,2,9,2"
                     Click="OK_Click"
+                    IsEnabled="{Binding IsOkButtonEnabled}"
                     IsDefault="True"
                     MinWidth="73"
                     MinHeight="21" />

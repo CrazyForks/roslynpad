@@ -89,16 +89,6 @@ internal partial class ExtractInterfaceDialog : IExtractInterfaceDialog
         _viewModel.DeselectAll();
     }
 
-    private void DestinationCurrentFile_Checked(object? sender, RoutedEventArgs e)
-    {
-        _viewModel.Destination = InterfaceDestination.CurrentFile;
-    }
-
-    private void DestinationNewFile_Checked(object? sender, RoutedEventArgs e)
-    {
-        _viewModel.Destination = InterfaceDestination.NewFile;
-    }
-
     private void SelectAllInTextBox(object? sender, RoutedEventArgs e)
     {
         if (e.OriginalSource is TextBox textbox && Mouse.LeftButton == MouseButtonState.Released)

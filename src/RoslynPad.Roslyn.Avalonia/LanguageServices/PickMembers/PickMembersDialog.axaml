@@ -39,6 +39,8 @@
                              Grid.Column="0"
                              Margin="4"
                              SelectionMode="Single"
+                             ItemsSource="{Binding MemberContainers}"
+                             SelectedIndex="{Binding SelectedIndex}"
                              KeyDown="OnListBoxKeyDown"
                              DoubleTapped="OnListBoxDoubleTapped">
                         <ListBox.ItemTemplate>
@@ -58,10 +60,12 @@
                         <Button Name="UpButton"
                                 Margin="0,9,4,0"
                                 Click="MoveUp_Click"
+                                IsEnabled="{Binding CanMoveUp}"
                                 Content="&#x25B2;" />
                         <Button Name="DownButton"
                                 Margin="0,9,4,0"
                                 Click="MoveDown_Click"
+                                IsEnabled="{Binding CanMoveDown}"
                                 Content="&#x25BC;" />
                         <Button Content="{Binding #dialog.SelectAll}"
                                 Margin="0,29,4,0"
@@ -77,10 +81,10 @@
                                 MinHeight="21" />
                     </StackPanel>
 
-                    <ItemsControl x:Name="OptionsControl"
-                                  Grid.Row="1"
+                    <ItemsControl Grid.Row="1"
                                   Grid.ColumnSpan="2"
-                                  IsTabStop="False">
+                                  IsTabStop="False"
+                                  ItemsSource="{Binding Options}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <CheckBox IsChecked="{Binding IsChecked}"

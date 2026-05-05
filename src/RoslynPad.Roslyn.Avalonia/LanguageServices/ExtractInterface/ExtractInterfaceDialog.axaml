@@ -26,11 +26,12 @@
             <TextBlock Text="{Binding #dialog.NewInterfaceName}"
                        Margin="0,5,0,2" />
             <TextBox x:Name="InterfaceNameTextBox"
+                     Text="{Binding InterfaceName, Mode=TwoWay}"
                      Padding="2"
                      GotFocus="SelectAllInTextBox" />
             <TextBlock Text="{Binding #dialog.GeneratedName}"
                        Margin="0,5,0,2" />
-            <TextBox x:Name="GeneratedNameTextBox"
+            <TextBox Text="{Binding GeneratedName, Mode=OneWay}"
                      IsReadOnly="True"
                      Padding="2"
                      GotFocus="SelectAllInTextBox" />
@@ -39,21 +40,21 @@
             <StackPanel Orientation="Horizontal">
                 <RadioButton x:Name="DestinationCurrentFileRadioButton"
                              Content="{Binding #dialog.CurrentFileLabel}"
-                             IsChecked="True"
+                             IsChecked="{Binding IsCurrentFileDestination}"
                              GroupName="Destination"
                              Margin="0,0,15,0" />
                 <RadioButton x:Name="DestinationNewFileRadioButton"
                              Content="{Binding #dialog.NewFileLabel}"
+                             IsChecked="{Binding FileNameEnabled}"
                              GroupName="Destination" />
             </StackPanel>
-            <TextBlock x:Name="FileNameLabel"
-                       Text="{Binding #dialog.NewFileName}"
+            <TextBlock Text="{Binding #dialog.NewFileName}"
                        Margin="0,5,0,2"
-                       IsVisible="False" />
-            <TextBox x:Name="FileNameTextBox"
+                       IsVisible="{Binding FileNameEnabled}" />
+            <TextBox Text="{Binding FileName, Mode=TwoWay}"
                      Padding="2"
                      GotFocus="SelectAllInTextBox"
-                     IsVisible="False" />
+                     IsVisible="{Binding FileNameEnabled}" />
         </StackPanel>
 
         <HeaderedContentControl Grid.Row="1"
@@ -69,6 +70,7 @@
                              Grid.Column="0"
                              Margin="4"
                              SelectionMode="Multiple"
+                             ItemsSource="{Binding MemberContainers}"
                              KeyDown="OnListBoxKeyDown"
                              DoubleTapped="OnListBoxDoubleTapped">
                         <ListBox.ItemTemplate>

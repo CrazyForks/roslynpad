@@ -96,41 +96,8 @@ internal partial class ExtractInterfaceDialog : Window, IExtractInterfaceDialog
         get => DataContext ?? throw new InvalidOperationException("DataContext is null");
         set
         {
+            DataContext = value;
             _viewModel = (ExtractInterfaceDialogViewModel)value;
-            Members.ItemsSource = _viewModel.MemberContainers;
-            InterfaceNameTextBox.Text = _viewModel.InterfaceName;
-            GeneratedNameTextBox.Text = _viewModel.GeneratedName;
-            FileNameTextBox.Text = _viewModel.FileName;
-
-            DestinationCurrentFileRadioButton.IsCheckedChanged += (_, _) =>
-            {
-                if (_viewModel != null)
-                {
-                    _viewModel.Destination = DestinationCurrentFileRadioButton.IsChecked == true
-                        ? InterfaceDestination.CurrentFile
-                        : InterfaceDestination.NewFile;
-                    var showFileName = _viewModel.FileNameEnabled;
-                    FileNameLabel.IsVisible = showFileName;
-                    FileNameTextBox.IsVisible = showFileName;
-                }
-            };
-
-            InterfaceNameTextBox.TextChanged += (_, _) =>
-            {
-                if (_viewModel != null)
-                {
-                    _viewModel.InterfaceName = InterfaceNameTextBox.Text ?? string.Empty;
-                    GeneratedNameTextBox.Text = _viewModel.GeneratedName;
-                    FileNameTextBox.Text = _viewModel.FileName;
-                }
-            };
-            FileNameTextBox.TextChanged += (_, _) =>
-            {
-                if (_viewModel != null)
-                {
-                    _viewModel.FileName = FileNameTextBox.Text ?? string.Empty;
-                }
-            };
         }
     }
 

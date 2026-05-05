@@ -198,10 +198,6 @@
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding IsDisabled}"
                                          Value="True">
-                                <Setter Property="Background"
-                                        Value="{Binding ElementName=dialog, Path=DisabledParameterBackground}" />
-                                <Setter Property="Foreground"
-                                        Value="{Binding ElementName=dialog, Path=DisabledParameterForeground}" />
                                 <Setter Property="IsEnabled"
                                         Value="False" />
                             </DataTrigger>
@@ -214,13 +210,8 @@
                             </DataTrigger>
                             <DataTrigger Binding="{Binding IsRemoved}"
                                          Value="True">
-                                <Setter Property="Foreground"
-                                        Value="{Binding ElementName=dialog, Path=RemovedParameterText}" />
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding IsRemoved}"
-                                         Value="False">
-                                <Setter Property="Foreground"
-                                        Value="{Binding ElementName=dialog, Path=ParameterText}" />
+                                <Setter Property="Opacity"
+                                        Value="0.5" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>

@@ -24,10 +24,6 @@ internal partial class ChangeSignatureDialog : IChangeSignatureDialog
     public string OK => "OK";
     public string Cancel => "Cancel";
 
-    public Brush ParameterText { get; }
-    public Brush RemovedParameterText { get; }
-    public Brush DisabledParameterForeground { get; }
-    public Brush DisabledParameterBackground { get; }
     public Brush StrikethroughBrush { get; }
 
 
@@ -45,11 +41,6 @@ internal partial class ChangeSignatureDialog : IChangeSignatureDialog
         typeHeader.Header = "Type";
         parameterHeader.Header = "Parameter";
 
-        ParameterText = SystemParameters.HighContrast ? SystemColors.WindowTextBrush : new SolidColorBrush(Color.FromArgb(0xFF, 0x1E, 0x1E, 0x1E));
-        RemovedParameterText = SystemParameters.HighContrast ? SystemColors.WindowTextBrush : new SolidColorBrush(Colors.Gray);
-        DisabledParameterBackground = SystemParameters.HighContrast ? SystemColors.WindowBrush : new SolidColorBrush(Color.FromArgb(0xFF, 0xDF, 0xE7, 0xF3));
-        DisabledParameterForeground = SystemParameters.HighContrast ? SystemColors.GrayTextBrush : new SolidColorBrush(Color.FromArgb(0xFF, 0xA2, 0xA4, 0xA5));
-        Members.Background = SystemParameters.HighContrast ? SystemColors.WindowBrush : new SolidColorBrush(Color.FromArgb(0xFF, 0xFF, 0xFF, 0xFF));
         StrikethroughBrush = SystemParameters.HighContrast ? SystemColors.WindowTextBrush : new SolidColorBrush(Colors.Red);
 
         Loaded += ChangeSignatureDialog_Loaded;
@@ -88,8 +79,6 @@ internal partial class ChangeSignatureDialog : IChangeSignatureDialog
         if (_viewModel.CanMoveUp && oldSelectedIndex >= 0)
         {
             _viewModel.MoveUp();
-            Members.Items.Refresh();
-            Members.SelectedIndex = oldSelectedIndex - 1;
         }
 
         SetFocusToSelectedRow();
@@ -101,8 +90,6 @@ internal partial class ChangeSignatureDialog : IChangeSignatureDialog
         if (_viewModel.CanMoveDown && oldSelectedIndex >= 0)
         {
             _viewModel.MoveDown();
-            Members.Items.Refresh();
-            Members.SelectedIndex = oldSelectedIndex + 1;
         }
 
         SetFocusToSelectedRow();
@@ -113,7 +100,6 @@ internal partial class ChangeSignatureDialog : IChangeSignatureDialog
         if (_viewModel.CanRemove)
         {
             _viewModel.Remove();
-            Members.Items.Refresh();
         }
 
         SetFocusToSelectedRow();
@@ -124,7 +110,6 @@ internal partial class ChangeSignatureDialog : IChangeSignatureDialog
         if (_viewModel.CanRestore)
         {
             _viewModel.Restore();
-            Members.Items.Refresh();
         }
 
         SetFocusToSelectedRow();
@@ -205,7 +190,6 @@ internal partial class ChangeSignatureDialog : IChangeSignatureDialog
             _viewModel.Restore();
         }
 
-        Members.Items.Refresh();
         SetFocusToSelectedRow();
     }
 

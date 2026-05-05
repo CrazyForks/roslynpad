@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using System.Composition;
@@ -22,8 +21,6 @@ internal partial class ChangeSignatureDialog : Window, IChangeSignatureDialog
     public ICommand MoveDownCommand { get; }
     public ICommand ToggleRemovedCommand { get; }
 
-    private static readonly TaggedTextToTextBlockConverter s_taggedTextConverter = new();
-
     public ChangeSignatureDialog()
     {
         MoveUpCommand = new SimpleCommand(() => MoveUp_Click(null, null!));
@@ -32,29 +29,7 @@ internal partial class ChangeSignatureDialog : Window, IChangeSignatureDialog
 
         InitializeComponent();
 
-        Members.SelectionChanged += Members_SelectionChanged;
         Opened += (_, _) => Members.Focus();
-    }
-
-    private void Members_SelectionChanged(object? sender, SelectionChangedEventArgs e)
-    {
-        if (_viewModel != null)
-        {
-            _viewModel.SelectedIndex = Members.SelectedIndex >= 0 ? Members.SelectedIndex : null;
-        }
-        UpdateButtonStates();
-    }
-
-    private void UpdateButtonStates()
-    {
-        if (_viewModel == null) return;
-        UpButton.IsEnabled = _viewModel.CanMoveUp;
-        DownButton.IsEnabled = _viewModel.CanMoveDown;
-        RemoveButton.IsEnabled = _viewModel.CanRemove;
-        RestoreButton.IsEnabled = _viewModel.CanRestore;
-        OkButton.IsEnabled = _viewModel.IsOkButtonEnabled;
-        SignatureScroller.Content = s_taggedTextConverter.Convert(
-            _viewModel.SignatureDisplay, typeof(object), null!, System.Globalization.CultureInfo.CurrentCulture);
     }
 
     private void OK_Click(object? sender, RoutedEventArgs e)
@@ -73,28 +48,14 @@ internal partial class ChangeSignatureDialog : Window, IChangeSignatureDialog
     private void MoveUp_Click(object? sender, RoutedEventArgs e)
     {
         if (_viewModel is not { CanMoveUp: true }) return;
-        int oldSelectedIndex = Members.SelectedIndex;
-        if (oldSelectedIndex >= 0)
-        {
-            _viewModel.MoveUp();
-            RefreshItemsSource();
-            Members.SelectedIndex = oldSelectedIndex - 1;
-        }
-        UpdateButtonStates();
+        _viewModel.MoveUp();
         Members.Focus();
     }
 
     private void MoveDown_Click(object? sender, RoutedEventArgs e)
     {
         if (_viewModel is not { CanMoveDown: true }) return;
-        int oldSelectedIndex = Members.SelectedIndex;
-        if (oldSelectedIndex >= 0)
-        {
-            _viewModel.MoveDown();
-            RefreshItemsSource();
-            Members.SelectedIndex = oldSelectedIndex + 1;
-        }
-        UpdateButtonStates();
+        _viewModel.MoveDown();
         Members.Focus();
     }
 
@@ -103,9 +64,7 @@ internal partial class ChangeSignatureDialog : Window, IChangeSignatureDialog
         if (_viewModel is { CanRemove: true })
         {
             _viewModel.Remove();
-            RefreshItemsSource();
         }
-        UpdateButtonStates();
         Members.Focus();
     }
 
@@ -114,9 +73,7 @@ internal partial class ChangeSignatureDialog : Window, IChangeSignatureDialog
         if (_viewModel is { CanRestore: true })
         {
             _viewModel.Restore();
-            RefreshItemsSource();
         }
-        UpdateButtonStates();
         Members.Focus();
     }
 
@@ -131,18 +88,7 @@ internal partial class ChangeSignatureDialog : Window, IChangeSignatureDialog
         {
             _viewModel.Restore();
         }
-        RefreshItemsSource();
-        UpdateButtonStates();
         Members.Focus();
-    }
-
-    private void RefreshItemsSource()
-    {
-        if (_viewModel == null) return;
-        var selectedIndex = Members.SelectedIndex;
-        Members.ItemsSource = null;
-        Members.ItemsSource = _viewModel.AllParameters;
-        Members.SelectedIndex = selectedIndex;
     }
 
     public object ViewModel
@@ -150,11 +96,9 @@ internal partial class ChangeSignatureDialog : Window, IChangeSignatureDialog
         get => DataContext ?? throw new InvalidOperationException("DataContext is null");
         set
         {
+            DataContext = value;
             _viewModel = (ChangeSignatureDialogViewModel)value;
-            Members.ItemsSource = _viewModel.AllParameters;
             Members.SelectedIndex = _viewModel.GetStartingSelectionIndex();
-            OkButton.IsEnabled = false;
-            UpdateButtonStates();
         }
     }
 

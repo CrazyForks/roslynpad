@@ -133,8 +133,15 @@ internal class ExtractInterfaceDialogViewModel : NotificationObject
             if (SetProperty(ref _destination, value))
             {
                 OnPropertyChanged(nameof(FileNameEnabled));
+                OnPropertyChanged(nameof(IsCurrentFileDestination));
             }
         }
+    }
+
+    public bool IsCurrentFileDestination
+    {
+        get => Destination == InterfaceDestination.CurrentFile;
+        set => Destination = value ? InterfaceDestination.CurrentFile : InterfaceDestination.NewFile;
     }
 
     public bool FileNameEnabled => Destination == InterfaceDestination.NewFile;

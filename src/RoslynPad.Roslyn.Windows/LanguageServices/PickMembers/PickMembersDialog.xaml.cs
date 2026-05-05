@@ -82,8 +82,6 @@ internal partial class PickMembersDialog : Window, IPickMembersDialog
         if (_viewModel.CanMoveUp && oldSelectedIndex >= 0)
         {
             _viewModel.MoveUp();
-            Members.Items.Refresh();
-            Members.SelectedIndex = oldSelectedIndex - 1;
         }
 
         SetFocusToSelectedRow();
@@ -95,8 +93,6 @@ internal partial class PickMembersDialog : Window, IPickMembersDialog
         if (_viewModel.CanMoveDown && oldSelectedIndex >= 0)
         {
             _viewModel.MoveDown();
-            Members.Items.Refresh();
-            Members.SelectedIndex = oldSelectedIndex + 1;
         }
 
         SetFocusToSelectedRow();

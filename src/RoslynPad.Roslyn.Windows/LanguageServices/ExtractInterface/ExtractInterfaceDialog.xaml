@@ -62,12 +62,11 @@
             <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
                 <RadioButton x:Name="destinationCurrentFileRadioButton"
                              Content="{Binding ElementName=dialog, Path=CurrentFileLabel}"
-                             IsChecked="True"
-                             Checked="DestinationCurrentFile_Checked"
+                             IsChecked="{Binding IsCurrentFileDestination}"
                              Margin="0,0,15,0" />
                 <RadioButton x:Name="destinationNewFileRadioButton"
                              Content="{Binding ElementName=dialog, Path=NewFileLabel}"
-                             Checked="DestinationNewFile_Checked" />
+                             IsChecked="{Binding FileNameEnabled}" />
             </StackPanel>
             <Label x:Uid="FileNameLabel"
                    Content="{Binding ElementName=dialog, Path=NewFileName}"

@@ -139,6 +139,8 @@ internal class PickMembersDialogViewModel : NotificationObject
         list.Insert(index + delta, param);
 
         SelectedIndex += delta;
+
+        OnPropertyChanged(nameof(MemberContainers));
     }
 
     internal class MemberSymbolViewModel(ISymbol symbol) : NotificationObject
