@@ -28,7 +28,7 @@ public class OpenDocumentViewModel : NotificationObject, IDisposable, IDocumentC
 
     private readonly IServiceProvider _serviceProvider;
     private readonly IAppDispatcher _dispatcher;
-    private readonly ITelemetryProvider _telemetryProvider;
+    private readonly IErrorReporter _errorReporter;
     private readonly ILogger<OpenDocumentViewModel> _logger;
     private readonly IPlatformsFactory _platformsFactory;
     private readonly ObservableCollection<IResultObject> _results;
@@ -128,13 +128,13 @@ public class OpenDocumentViewModel : NotificationObject, IDisposable, IDocumentC
     }
 
     [ImportingConstructor]
-    public OpenDocumentViewModel(IServiceProvider serviceProvider, MainViewModel mainViewModel, ICommandProvider commands, IAppDispatcher appDispatcher, ITelemetryProvider telemetryProvider, ILogger<OpenDocumentViewModel> logger)
+    public OpenDocumentViewModel(IServiceProvider serviceProvider, MainViewModel mainViewModel, ICommandProvider commands, IAppDispatcher appDispatcher, IErrorReporter errorReporter, ILogger<OpenDocumentViewModel> logger)
     {
         Id = Guid.NewGuid().ToString("n");
         BuildPath = Path.Combine(Path.GetTempPath(), "roslynpad", "build", Id);
         Directory.CreateDirectory(BuildPath);
 
-        _telemetryProvider = telemetryProvider;
+        _errorReporter = errorReporter;
         _logger = logger;
         _platformsFactory = serviceProvider.GetRequiredService<IPlatformsFactory>();
         _serviceProvider = serviceProvider;
@@ -472,7 +472,7 @@ public class OpenDocumentViewModel : NotificationObject, IDisposable, IDocumentC
         }
         catch (Exception e)
         {
-            _telemetryProvider.ReportError(e);
+            _errorReporter.ReportError(e);
             throw;
         }
         finally
@@ -516,7 +516,7 @@ public class OpenDocumentViewModel : NotificationObject, IDisposable, IDocumentC
         }
         catch (Exception ex)
         {
-            _telemetryProvider.ReportError(ex);
+            _errorReporter.ReportError(ex);
         }
     });
 

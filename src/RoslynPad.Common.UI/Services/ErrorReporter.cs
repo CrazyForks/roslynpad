@@ -1,15 +1,19 @@
-﻿using System.Diagnostics;
+﻿using System.Composition;
+using System.Diagnostics;
 
 namespace RoslynPad.UI;
 
-public abstract class TelemetryProviderBase : ITelemetryProvider
+[Export(typeof(IErrorReporter)), Shared]
+[method: ImportingConstructor]
+public class ErrorReporter(IAppDispatcher appDispatcher) : IErrorReporter
 {
     private Exception? _lastError;
 
-    public virtual void Initialize(string version, IApplicationSettings settings)
+    public void Initialize(string version, IApplicationSettings settings)
     {
         AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException;
         TaskScheduler.UnobservedTaskException += TaskSchedulerOnUnobservedTaskException;
+        appDispatcher.UnhandledException += HandleException;
     }
 
     private void TaskSchedulerOnUnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs args)
@@ -22,7 +26,7 @@ public abstract class TelemetryProviderBase : ITelemetryProvider
         HandleException((Exception)args.ExceptionObject);
     }
 
-    protected void HandleException(Exception exception)
+    private void HandleException(Exception exception)
     {
         if (exception is OperationCanceledException)
         {

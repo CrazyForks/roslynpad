@@ -7,7 +7,7 @@ namespace RoslynPad.UI;
 public sealed class NuGetDocumentViewModel : NotificationObject
 {
     private readonly NuGetViewModel _nuGetViewModel;
-    private readonly ITelemetryProvider _telemetryProvider;
+    private readonly IErrorReporter _errorReporter;
 
     private string? _searchTerm;
     private bool _isSearching;
@@ -23,10 +23,10 @@ public sealed class NuGetDocumentViewModel : NotificationObject
     }
 
     [ImportingConstructor]
-    public NuGetDocumentViewModel(NuGetViewModel nuGetViewModel, ICommandProvider commands, ITelemetryProvider telemetryProvider)
+    public NuGetDocumentViewModel(NuGetViewModel nuGetViewModel, ICommandProvider commands, IErrorReporter errorReporter)
     {
         _nuGetViewModel = nuGetViewModel;
-        _telemetryProvider = telemetryProvider;
+        _errorReporter = errorReporter;
         _packages = [];
 
         InstallPackageCommand = commands.Create<PackageData>(InstallPackage);
@@ -135,7 +135,7 @@ public sealed class NuGetDocumentViewModel : NotificationObject
             }
             catch (Exception e) when (e is not OperationCanceledException)
             {
-                _telemetryProvider.ReportError(e);
+                _errorReporter.ReportError(e);
             }
         }
         finally

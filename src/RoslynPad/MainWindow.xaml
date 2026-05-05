@@ -278,10 +278,6 @@
                                        Width="16"
                                        Height="16" />
                             </MenuItem.Header>
-                            <MenuItem IsCheckable="True"
-                                      IsChecked="{Binding SendTelemetry}"
-                                      Header="Send Telemetry"
-                                      ToolTip="Send errors to the author (stack traces of internal RoslynPad errors - not your code)" />
                             <MenuItem Header="Report a problem..."
                                       Command="{Binding ReportProblemCommand}" />
                         </MenuItem>

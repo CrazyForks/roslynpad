@@ -1,6 +1,6 @@
 ﻿namespace RoslynPad.UI;
 
-public interface ITelemetryProvider
+public interface IErrorReporter
 {
     void Initialize(string version, IApplicationSettings settings);
     Exception? LastError { get; }

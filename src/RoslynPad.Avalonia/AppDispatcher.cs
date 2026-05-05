@@ -6,6 +6,18 @@ namespace RoslynPad;
 [Export(typeof(IAppDispatcher))]
 public class AppDispatcher : IAppDispatcher
 {
+    public AppDispatcher()
+    {
+        Dispatcher.UIThread.UnhandledException += (_, args) =>
+        {
+            if (UnhandledException is { } handler)
+            {
+                handler(args.Exception);
+                args.Handled = true;
+            }
+        };
+    }
+
     public void InvokeAsync(Action action, AppDispatcherPriority priority = AppDispatcherPriority.Normal,
         CancellationToken cancellationToken = new CancellationToken())
     {
@@ -17,6 +29,8 @@ public class AppDispatcher : IAppDispatcher
     {
         return InternalInvoke(action, priority, cancellationToken);
     }
+
+    public event Action<Exception>? UnhandledException;
 
     private Task InternalInvoke(Action action, AppDispatcherPriority priority, CancellationToken cancellationToken)
     {

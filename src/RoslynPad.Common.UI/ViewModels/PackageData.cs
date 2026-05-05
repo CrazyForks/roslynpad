@@ -1,12 +1,11 @@
 ﻿using System.Collections.Immutable;
 using NuGet.Protocol.Core.Types;
 using NuGet.Versioning;
-using RoslynPad.Roslyn.Completion.Providers;
 using RoslynPad.Utilities;
 
 namespace RoslynPad.UI;
 
-public sealed class PackageData : INuGetPackage
+public sealed class PackageData
 {
     private readonly IPackageSearchMetadata? _package;
 
@@ -19,29 +18,6 @@ public sealed class PackageData : INuGetPackage
     public string Id { get; }
     public NuGetVersion Version { get; }
     public ImmutableArray<PackageData> OtherVersions { get; private set; }
-
-    IEnumerable<string> INuGetPackage.Versions
-    {
-        get
-        {
-            if (!OtherVersions.IsDefaultOrEmpty)
-            {
-                var lastStable = OtherVersions.FirstOrDefault(v => !v.Version.IsPrerelease);
-                if (lastStable != null)
-                {
-                    yield return lastStable.Version.ToString();
-                }
-
-                foreach (var version in OtherVersions)
-                {
-                    if (version != lastStable)
-                    {
-                        yield return version.Version.ToString();
-                    }
-                }
-            }
-        }
-    }
 
     public IDelegateCommand? InstallPackageCommand { get; internal set; }
 

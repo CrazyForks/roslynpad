@@ -5,7 +5,7 @@ namespace RoslynPad;
 
 [Export(typeof(MainViewModel)), Shared]
 [method: ImportingConstructor]
-public class MainViewModelWindows(IServiceProvider serviceProvider, ITelemetryProvider telemetryProvider, ICommandProvider commands, IApplicationSettings settings, NuGetViewModel nugetViewModel, DocumentFileWatcher documentFileWatcher) : MainViewModel(serviceProvider, telemetryProvider, commands, settings, nugetViewModel, documentFileWatcher)
+public class MainViewModelWindows(IServiceProvider serviceProvider, IErrorReporter errorReporter, ICommandProvider commands, IApplicationSettings settings, NuGetViewModel nugetViewModel, DocumentFileWatcher documentFileWatcher) : MainViewModel(serviceProvider, errorReporter, commands, settings, nugetViewModel, documentFileWatcher)
 {
     protected override ImmutableArray<Assembly> CompositionAssemblies => base.CompositionAssemblies
         .Add(Assembly.Load(new AssemblyName("RoslynPad.Roslyn.Windows")))

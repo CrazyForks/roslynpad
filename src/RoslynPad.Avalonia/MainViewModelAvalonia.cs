@@ -9,7 +9,7 @@ namespace RoslynPad;
 
 [Export(typeof(MainViewModel)), Shared]
 [method: ImportingConstructor]
-public class MainViewModelAvalonia(IServiceProvider serviceProvider, ITelemetryProvider telemetryProvider, ICommandProvider commands, IApplicationSettings settings, NuGetViewModel nugetViewModel, DocumentFileWatcher documentWatcher) : MainViewModel(serviceProvider, telemetryProvider, commands, settings, nugetViewModel, documentWatcher)
+public class MainViewModelAvalonia(IServiceProvider serviceProvider, IErrorReporter errorReporter, ICommandProvider commands, IApplicationSettings settings, NuGetViewModel nugetViewModel, DocumentFileWatcher documentWatcher) : MainViewModel(serviceProvider, errorReporter, commands, settings, nugetViewModel, documentWatcher)
 {
     protected override ImmutableArray<Assembly> CompositionAssemblies => base.CompositionAssemblies
         .Add(Assembly.Load(new AssemblyName("RoslynPad.Roslyn.Avalonia")))

@@ -117,6 +117,11 @@ public sealed class RoslynCodeEditorCompletionProvider : ICodeEditorCompletionPr
     private static string GetFilterText(CompletionItem item, SourceText text, Dictionary<TextSpan, string> textSpanToText)
     {
         var textSpan = item.Span;
+        if (textSpan.End > text.Length)
+        {
+            return string.Empty;
+        }
+
         if (!textSpanToText.TryGetValue(textSpan, out var filterText))
         {
             filterText = text.GetSubText(textSpan).ToString();

@@ -21,7 +21,7 @@ public abstract class MainViewModel : NotificationObject, IDisposable
     private static readonly Version s_currentVersion = Assembly.GetEntryAssembly()?.GetName().Version ?? new Version();
 
     private readonly IServiceProvider _serviceProvider;
-    private readonly ITelemetryProvider _telemetryProvider;
+    private readonly IErrorReporter _errorReporter;
     private readonly ICommandProvider _commands;
     private readonly DocumentFileWatcher _documentFileWatcher;
     private readonly string _editorConfigPath;
@@ -64,10 +64,10 @@ public abstract class MainViewModel : NotificationObject, IDisposable
         }
     }
 
-    public MainViewModel(IServiceProvider serviceProvider, ITelemetryProvider telemetryProvider, ICommandProvider commands, IApplicationSettings settings, NuGetViewModel nugetViewModel, DocumentFileWatcher documentFileWatcher)
+    public MainViewModel(IServiceProvider serviceProvider, IErrorReporter errorReporter, ICommandProvider commands, IApplicationSettings settings, NuGetViewModel nugetViewModel, DocumentFileWatcher documentFileWatcher)
     {
         _serviceProvider = serviceProvider;
-        _telemetryProvider = telemetryProvider;
+        _errorReporter = errorReporter;
         _commands = commands;
         _documentFileWatcher = documentFileWatcher;
         _themeManager = new VsCodeThemeReader();
@@ -76,8 +76,8 @@ public abstract class MainViewModel : NotificationObject, IDisposable
         _editorConfigPath = Path.Combine(settings.GetDefaultDocumentPath(), ".editorconfig");
         Settings = settings.Values;
 
-        _telemetryProvider.Initialize(s_currentVersion.ToString(), settings);
-        _telemetryProvider.LastErrorChanged += () =>
+        _errorReporter.Initialize(s_currentVersion.ToString(), settings);
+        _errorReporter.LastErrorChanged += () =>
         {
             OnPropertyChanged(nameof(LastError));
             OnPropertyChanged(nameof(HasError));
@@ -89,7 +89,7 @@ public abstract class MainViewModel : NotificationObject, IDisposable
         OpenFileCommand = commands.CreateAsync(OpenFile);
         CloseCurrentDocumentCommand = commands.CreateAsync(CloseCurrentDocument);
         CloseDocumentCommand = commands.CreateAsync<OpenDocumentViewModel>(CloseDocument);
-        ClearErrorCommand = commands.Create(_telemetryProvider.ClearLastError);
+        ClearErrorCommand = commands.Create(_errorReporter.ClearLastError);
         ReportProblemCommand = commands.Create(ReportProblem);
         EditUserDocumentPathCommand = commands.CreateAsync(EditUserDocumentPath);
         ToggleOptimizationCommand = commands.Create(() => Settings.OptimizeCompilation = !Settings.OptimizeCompilation);
@@ -181,7 +181,7 @@ public abstract class MainViewModel : NotificationObject, IDisposable
         }
         catch (Exception e)
         {
-            _telemetryProvider.ReportError(e);
+            _errorReporter.ReportError(e);
         }
     }
 
@@ -548,7 +548,7 @@ public abstract class MainViewModel : NotificationObject, IDisposable
     {
         get
         {
-            var exception = _telemetryProvider.LastError;
+            var exception = _errorReporter.LastError;
             var aggregateException = exception as AggregateException;
             return aggregateException?.Flatten() ?? exception;
         }
@@ -557,16 +557,6 @@ public abstract class MainViewModel : NotificationObject, IDisposable
     public bool HasError => LastError != null;
 
     public IDelegateCommand ClearErrorCommand { get; }
-
-    public bool SendTelemetry
-    {
-        get => Settings.SendErrors;
-        set
-        {
-            Settings.SendErrors = value;
-            OnPropertyChanged(nameof(SendTelemetry));
-        }
-    }
 
     public bool HasNoOpenDocuments => IsInitialized && OpenDocuments.Count == 0;
 

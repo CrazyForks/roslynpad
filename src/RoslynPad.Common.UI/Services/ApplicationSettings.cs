@@ -25,7 +25,7 @@ internal class ApplicationSettings : IApplicationSettings
         }
     };
 
-    private readonly ITelemetryProvider? _telemetryProvider;
+    private readonly IErrorReporter? _errorReporter;
     private readonly IKeyBindingService _keyBindingService;
     private SerializableValues _values;
     private string? _path;
@@ -33,10 +33,10 @@ internal class ApplicationSettings : IApplicationSettings
     [ImportingConstructor]
     public ApplicationSettings(
         IKeyBindingService keyBindingService,
-        [Import(AllowDefault = true)] ITelemetryProvider telemetryProvider)
+        [Import(AllowDefault = true)] IErrorReporter errorReporter)
     {
         _keyBindingService = keyBindingService;
-        _telemetryProvider = telemetryProvider;
+        _errorReporter = errorReporter;
         _values = new SerializableValues();
         InitializeValues();
 
@@ -80,7 +80,7 @@ internal class ApplicationSettings : IApplicationSettings
         if (string.IsNullOrEmpty(documentsPath))
         {
             documentsPath = "/";
-            _telemetryProvider?.ReportError(new InvalidOperationException("Unable to locate the user documents folder; Using root"));
+            _errorReporter?.ReportError(new InvalidOperationException("Unable to locate the user documents folder; Using root"));
         }
 
         return Path.Combine(documentsPath, "RoslynPad");
@@ -104,7 +104,7 @@ internal class ApplicationSettings : IApplicationSettings
         catch (Exception e)
         {
             _values.LoadDefaultSettings();
-            _telemetryProvider?.ReportError(e);
+            _errorReporter?.ReportError(e);
         }
 
         _keyBindingService.LoadOverrides(_values);
@@ -121,7 +121,7 @@ internal class ApplicationSettings : IApplicationSettings
         }
         catch (Exception e)
         {
-            _telemetryProvider?.ReportError(e);
+            _errorReporter?.ReportError(e);
         }
     }
 

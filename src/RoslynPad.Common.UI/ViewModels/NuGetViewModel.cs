@@ -14,8 +14,8 @@ using Settings = NuGet.Configuration.Settings;
 
 namespace RoslynPad.UI;
 
-[Export, Export(typeof(INuGetCompletionProvider)), Shared]
-public sealed class NuGetViewModel : NotificationObject, INuGetCompletionProvider
+[Export, Shared]
+public sealed class NuGetViewModel : NotificationObject
 {
     private const int MaxSearchResults = 50;
 
@@ -26,7 +26,7 @@ public sealed class NuGetViewModel : NotificationObject, INuGetCompletionProvide
     public string GlobalPackageFolder { get; }
 
     [ImportingConstructor]
-    public NuGetViewModel([Import(AllowDefault = true)] ITelemetryProvider? telemetryProvider, IApplicationSettings appSettings)
+    public NuGetViewModel([Import(AllowDefault = true)] IErrorReporter? errorReporter, IApplicationSettings appSettings)
     {
         try
         {
@@ -64,7 +64,7 @@ public sealed class NuGetViewModel : NotificationObject, INuGetCompletionProvide
                 {
                     if (i == retries)
                     {
-                        telemetryProvider?.ReportError(ex);
+                        errorReporter?.ReportError(ex);
                         throw;
                     }
                 }
@@ -115,12 +115,6 @@ public sealed class NuGetViewModel : NotificationObject, INuGetCompletionProvide
             }
         }
 
-        return packages;
-    }
-
-    async Task<IReadOnlyList<INuGetPackage>> INuGetCompletionProvider.SearchPackagesAsync(string searchString, bool exactMatch, CancellationToken cancellationToken)
-    {
-        var packages = await GetPackagesAsync(searchString, includePrerelease: true, exactMatch, cancellationToken).ConfigureAwait(false);
         return packages;
     }
 
